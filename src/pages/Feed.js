@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import api from '../services/api';
-import { View, Image, TouchableOpacity } from 'react-native';
+import { View, Image, TouchableOpacity, FlatList, Text } from 'react-native';
 
 import camera from '../assets/camera.png';
 
@@ -29,9 +29,15 @@ export default class Feed extends Component {
 
     render() {
         return (
-            <View>
+            <FlatList
+                data={this.state.feed}
+                keyExtractor={post => post._id}
+                renderItem={({ item }) => ( 
+                    <Text>{ item.author }</Text>
+                )}
+            >
                 
-            </View>
+            </FlatList>
         )
     }
 }
