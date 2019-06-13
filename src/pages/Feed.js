@@ -46,7 +46,7 @@ export default class Feed extends Component {
                             <Text style={styles.place}>{ item.place }</Text>
                         </View>
 
-                        <Image style={styles.feedImage} source={{ uri: `http://10.0.3.2:3333/${item.image}` }} />
+                        <Image style={styles.feedImage} source={{ uri: `http://10.0.3.2:3333/files/${item.image}` }} />
                         <View style={styles.feedItemFooter}>
                             <View style={styles.actions}>
                                 <TouchableOpacity onPress={() => {}}>
@@ -85,8 +85,50 @@ const styles = StyleSheet.create({
     feedItemHeader: {
         paddingHorizontal: 15,
 
-        
+        flexDirection: 'row',
+        alignItems: 'center'
+    },
+
+    name: {
+        fontSize: 14,
+        color: '#666'
+    },
+
+    place: {
+        fontSize: 12,
+        color: '#666',
+        marginTop: 2
+    },
+
+    feedImage: {
+        width: '100%',
+        height: 400,
+        marginVertical: 15
+    },
+
+    feedItemFooter: {
+        paddingHorizontal: 15
+    },
+
+    actions: {
+        flexDirection: 'row'
+    },
+
+    action: {
+        marginTop: 15,
+        fontWeight: 'bold',
+        color: '#000'
+    },
+
+    description: {
+        lineHeight: 18,
+        color: '#000'
+    },
+
+    hashtags: {
+        color: '#7159c1'
     }
+
 })
 
 
