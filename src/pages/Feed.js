@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import io from 'socket.io-client';
 import api from '../services/api';
 import { View, Image, TouchableOpacity, StyleSheet, FlatList, Text } from 'react-native';
 
@@ -24,13 +25,33 @@ export default class Feed extends Component {
     };
     
     async componentDidMount(){
-        // this.registerToSocket();
+        this.registerToSocket();
 
         const response = await api.get('/posts');
 
         console.log(response.data);
 
         this.setState({ feed: response.data });
+    };
+
+    registerToSocket = () => {
+        const socket = io('http://localhost:3333');
+
+        socket.on('post', newPost => {
+            this.setState({ feed: [newPost, ...this.state.feed] });
+        });
+
+        socket.on('like', likedPost => {
+            this.setState({
+                feed: this.state.feed.map(post => 
+                    post._id === likedPost._id ? likedPost : post
+                )
+            });
+        });
+    };
+
+    handleLike = id => {
+        api.post(`/posts/${id}/like`);
     };
 
     render() {
@@ -42,14 +63,16 @@ export default class Feed extends Component {
                 renderItem={({ item }) => ( 
                     <View style={styles.feedItem}>
                         <View style={styles.feedItemHeader}>
-                            <Text style={styles.name}>{ item.author }</Text>
-                            <Text style={styles.place}>{ item.place }</Text>
+                            <View style={styles.userInfo}>
+                                <Text style={styles.name}>{ item.author }</Text>
+                                <Text style={styles.place}>{ item.place }</Text>
+                            </View>
                         </View>
 
-                        <Image style={styles.feedImage} source={{ uri: `http://10.0.3.2:3333/files/${item.image}` }} />
+                        <Image style={styles.feedImage} source={{ uri: `http://localhost:3333/files/${item.image}` }} />
                         <View style={styles.feedItemFooter}>
                             <View style={styles.actions}>
-                                <TouchableOpacity onPress={() => {}}>
+                                <TouchableOpacity onPress={() => this.handleLike(item._id)}>
                                     <Image source={like} />
                                 </TouchableOpacity>
                                 <TouchableOpacity onPress={() => {}}>
@@ -91,7 +114,7 @@ const styles = StyleSheet.create({
 
     name: {
         fontSize: 14,
-        color: '#666'
+        color: '#000'
     },
 
     place: {
